@@ -45,18 +45,22 @@ def func1(src, des):
     release()
     transz(height)
     
+def force_control_on():
+    k_d = [3000.0,3000.0,3000.0,  200.0,200.0,200.0]
+    task_compliance_ctrl(k_d)
+    force_desired = 20.0
+    f_d = [0,0,-force_desired,0.0,0.0,0.0]
+    f_dir = [0,0,1,0,0,0]
+    set_desired_force(f_d,f_dir)
+
+def force_control_off():
+    release_force()
+    release_compliance_ctrl()
+    
+################################################ code start
+    
 home = posj(0,0,90, 0,90,0)
 movej(home, 50, 50)
 
 # 기본 속도, 가속도
 vv, aa = 80, 80
-
-p1 = posx(150, 20, 100, 45, 180, 45)
-p2 = posx(300, 100, 100, 45, 180, 45)
-
-func1(p1,p2)
-
-    
-    
-    
-    
