@@ -24,9 +24,8 @@ def func1(src, des):
     #잡고 얼마나 들지
     height = 100
 
-    # z값 유지하고 이동
-    curr = get_current_posx()[0]
-    src[2] = curr[2]
+    # z값 유지하면서 이동
+    src[2] = get_current_posx()[0][2]
     movel(src, vv, aa)
     
     # 내려서 잡고 올리기
@@ -35,8 +34,8 @@ def func1(src, des):
     wait(0.5)
     transz(height)
     
-     # z값 유지하고 이동
-    des[2] = curr[2]
+     # z값 유지하면서 이동
+    des[2] = get_current_posx()[0][2]
     movel(des, vv, aa)
     wait(0.5)
     
