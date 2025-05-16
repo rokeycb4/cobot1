@@ -10,13 +10,26 @@
 <br>
 
 ## How to use
-
-
-### Requirements
+<br>
 <br>
 
 
-## 시연
+
+### Requirements
+
+```
+  Python >= 3.10
+```
+<br>
+<br>
+
+
+## 시연 영상
+
+<br>
+<br>
+<br>
+
 
 ## License
 ```
