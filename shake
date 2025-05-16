@@ -1,0 +1,37 @@
+# 현재 위치 저장 (컵을 들고 있는 위치)
+init_pos = get_current_pose()
+
+# 흔들기 설정
+mix_amplitude = 0.05   # 앞뒤 흔들기 거리 (5cm)
+z_amplitude = 0.01     # 위아래 살짝 움직임
+mix_repeat = 3         # 흔들기 반복 횟수
+mix_speed = 30         # 흔들기 속도
+
+# 원형 회전 설정
+circle_radius = 0.03   # 원의 반지름 (3cm)
+circle_repeat = 2      # 원 회전 반복 횟수
+circle_speed = 20      # 원 회전 속도
+circle_steps = 12      # 원을 나누는 포인트 개수 (정밀도)
+
+# ▶ 앞뒤로 흔들기 동작
+for i in range(mix_repeat):
+    # 앞
+    target1 = posj(init_pos[0], init_pos[1] + mix_amplitude, init_pos[2] + z_amplitude, init_pos[3], init_pos[4], init_pos[5])
+    movel(target1, vel=mix_speed)
+
+    # 뒤
+    target2 = posj(init_pos[0], init_pos[1] - mix_amplitude, init_pos[2] - z_amplitude, init_pos[3], init_pos[4], init_pos[5])
+    movel(target2, vel=mix_speed)
+
+# ▶ 원형 회전 동작 (XY 평면에서 원을 그림)
+for j in range(circle_repeat):
+    for i in range(circle_steps):
+        angle = 2 * math.pi * i / circle_steps
+        x = init_pos[0] + circle_radius * math.cos(angle)
+        y = init_pos[1] + circle_radius * math.sin(angle)
+        z = init_pos[2]  # 높이 유지
+        circular_pos = posj(x, y, z, init_pos[3], init_pos[4], init_pos[5])
+        movel(circular_pos, vel=circle_speed)
+
+# ▶ 원래 위치로 복귀
+movel(init_pos, vel=30)
