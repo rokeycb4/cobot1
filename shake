@@ -1,3 +1,6 @@
+import math
+
+
 # 현재 위치 저장 (컵을 들고 있는 위치)
 init_pos = get_current_pose()
 
