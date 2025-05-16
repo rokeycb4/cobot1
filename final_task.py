@@ -1,12 +1,10 @@
 
 
-
-
-def grab(obj):
+def grab(obj='cup'):
     if obj == 'cup':
         grab_cup()
     elif obj == 'ice':
-    
+        grab_ice()
     else:
         print("wrong object")
 
@@ -69,26 +67,44 @@ def grab_place(src, des, obj='CUP'):
     
 
 def get_cup_cord():
-    """# 다음 컵 위치 반환"""
-    
+    """다음 컵 위치 반환"""
     res = posx(572.49, -255.60, 59.8,  156.65, -180, 155.85)      # 임시값
     return  res
     
     
 def get_ice_cord():
     """다음 얼음 위치 반환"""
-    
     res = posx(572.49, 44.4, 59.8,  156.65, -180, 155.85)      # 임시값
     return  res
     
+def grab_shake():
+    """컵 집어서 흔들기"""
+    tp_log("grab_shake() called")
+    
+    movel(cord1, vv, aa)
+    
+    # 6축 회전(다른 모션으로 수정 필요)
+    movel([0,0,0,  0,0,60], vv, aa, mod=1)
+    movel([0,0,0,  0,0,-60], vv, aa, mod=1)
+    wait(0.5)
+    
+def serve():
+    """서빙 위치로 이동후 놓기"""
+    tp_log("serve() called")
+    
+    movel(cord1, vv, aa)
+    release()
+    movelz(50)
+    
+
 ################################################ code start
     
 home_j = posj(0,0,90, 0,90,0)             # 초기위치
 home = posx(368, 6.25, 425, 19.57, 180, 19.57)
 
 cord1 = trans(home, [-50,-50,-100, 0,0,0], DR_BASE, DR_BASE)    #컵 놓는 위치
-cord2 = trans(home, [50,50,-100, 0,0,0], DR_BASE, DR_BASE)      #최종 위치
-
+cord2 = trans(cord1, [0,0,20, 0,0,0], DR_BASE, DR_BASE)             #얼음 놓는 위치
+cord_final = trans(home, [50,50,-100, 0,0,0], DR_BASE, DR_BASE) #최종 위치
 
 #cord1 = posx(200, 30, 505,  0, 0, 0)   # 처음 컵 놓는 위치
 #cord2 = posx(600, 30, 505,  0, 0, 0)   # 처음 컵 놓는 위치
@@ -98,14 +114,17 @@ cord2 = trans(home, [50,50,-100, 0,0,0], DR_BASE, DR_BASE)      #최종 위치
 vv, aa = 80, 80
 
 def main():
+    tp_log("main called")
+
     movej(home_j, vv, aa)
-    
     grab_place(get_cup_cord(), cord1)
-    grab_place(get_ice_cord(), cord1)
+    grab_place(get_ice_cord(), cord2)
+    grab_shake()
+    serve()
     
-    
+    movej(home_j, vv, aa)
+
     
 #if __name__ == "__main__":
 if True:
     main()
-    
