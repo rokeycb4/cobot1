@@ -6,15 +6,15 @@ def set_va(vel, acc):
     set_accx(acc)
     
 def grab():
-    set_digital_output(1,0)
+    set_digital_output(1,1)
     set_digital_output(2,1)
     wait(1)
 
 def release():
     set_digital_output(2,0)
     set_digital_output(1,1)
-    
-    
+
+
 def force_control_on():
     k_d = [500.0,500.0,500.0,  200.0,200.0,200.0]
     task_compliance_ctrl(k_d)
@@ -26,7 +26,10 @@ def force_control_off():
     release_force()
     release_compliance_ctrl()
     
-# src에서 잡아서 des에 놓기
+def movelz(z):
+    """z축 상대좌표 이동"""
+    movel([0,0,z,  0,0,0], 30, 30, mod=1)  
+    
 def grab_place(src, des):
 
     upheight = 100
@@ -34,11 +37,11 @@ def grab_place(src, des):
     height = get_current_posx()[0][2] - src[2]
 
     src[2] = get_current_posx()[0][2]
-    movel(src, vv, aa)
+    movel(src)
     
     # 내려서 잡고 올리기
     movel([0,0,-height, 0,0,0], mod=1)
-    grab(obj)
+    grab()
     wait(0.5)
     movel([0,0,upheight, 0,0,0], mod=1)
     
@@ -54,30 +57,30 @@ def grab_place(src, des):
     movelz(-height)
     
     
-###################################################### code start
+#################################################
+
+
 set_va(80,80)
 
+p = posj(0,0,90,0,90,0)
+movej(p,30,30)
+wait(0.5)
 
+release()
 
-home = posj(0,0,90, 0,90,0)
-movej(home)
+p1 = posx(422.71, -228.1, 11.43, 152.36, 180, 151.34)
+p2 = posx(518.75, 21.5, 16.87, 0.65, -179.96, -0.51)
 
 grab_place(p1,p2)
 
+force_control_on()
+while True:
+    t = get_tool_force()
+    if t[2] > 20:
+        z = get_current_posx()[0][2]
+        if z < 30:
+            force_control_off()
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    
 
 
