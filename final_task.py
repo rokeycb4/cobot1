@@ -32,7 +32,7 @@ def release():
     
 def movelz(z):
     """z축 상대좌표 이동"""
-    movel([0,0,z,  0,0,0], 30, 30, mod=1)     
+    movel([0,0,z,  0,0,0], 60, 60, mod=1)     
 
 def force_control_on():
     k_d = [3000.0,3000.0,3000.0,  200.0,200.0,200.0]
@@ -48,9 +48,8 @@ def force_control_off():
     
     
 # src에서 잡아서 des에 놓기
-def grab_place(src, des, obj='cup'):
+def grab_place(src, des, upheight, upheightd, obj='cup'):
 
-    upheight = 150
 
     #내려갈값 구하기
     height = get_current_posx()[0][2] - src[2]
@@ -77,7 +76,7 @@ def grab_place(src, des, obj='cup'):
     # 내리고 놓고 올리기
     movelz(-height)
     release()
-    movelz(upheight)
+    movelz(upheightd)
     
 
 def get_cup_cord():
@@ -95,15 +94,20 @@ def grab_shake():
     """컵 집어서 흔들기"""
     tp_log("grab_shake() called")
     
-    movel(posx(300, 100, 68.39, 128.1, -178, 140.41), vv, aa)
+    movel(cord3)
     grab_cup()
-    movelz(200)
+    movelz(50)
     
-    p1 = posx(457.67, 16.53, 167.47, 13.12, -176.54, 2.42)
-    movel(p1,60,60)
+    #p1 = posx(457.67, 16.53, 167.47, 13.12, -176.54, 2.42)
+    #movel(p1,60,60)
+    
+    #tp_log('{}'.format(home))
+    movel(home)
+    
     amove_periodic([0,0,0,30,0,90],3.0 ,0.02 ,3,DR_TOOL)
     wait(10)
     amove_periodic([0,0,30,0,0,0],1.0 ,0.02 ,2,DR_TOOL)
+    wait(3)
     
     # 6축 회전(다른 모션으로 수정 필요)
     #movel([0,0,0,  0,0,60], vv, aa, mod=1)
@@ -114,32 +118,48 @@ def serve():
     """서빙 위치로 이동후 놓기"""
     tp_log("serve() called")
     
-    movel(cord_final, vv, aa)
-    release()
-    movelz(50)
+    movel(cord_final)
     
+    k_d = [3000,3000,3000,200,200,200]
+    task_compliance_ctrl(k_d)
+    while True:
+        tk = get_tool_force()
+        #tp_popup("{}".format(tk))
+        if tk[2] < -1 :
+            release()
+            movel(home, 30, 30)
+            #set_digital_output(2,0)
+       
 
 ################################################ code start
 
 set_va(100, 100, 100, 100)  # 속도 가속도 초기화
     
 home_j = posj(0,0,90, 0,90,0)             # 초기위치
-home = posx(368, 6.25, 425, 19.57, 180, 19.57)
+home = posx(367.3, 7.07, 204.32, 89.42, 179.98, 89.33)
 
-cord1 = posx(300, 100, 68.39, 128.1, -178, 140.41)                          #컵 놓는 위치
+
+
+cord1 = posx(300, 100, 57, 128.1, -178, 140.41)                          #컵 놓는 위치
 cord2 = trans(cord1, [0,0,50, 0,0,0], DR_BASE, DR_BASE)             #얼음 놓는 위치
-cord_final = trans(cord1, [0,-50,0, 0,0,0], DR_BASE, DR_BASE)      #최종 위치
+cord3 = posx(300, 100, 62, 128.1, -178, 140.41)   #shake할 때 컵 다시 잡는 위치
+cord_final = posx(306.45, -378.25, 131.33, 112.06, -179.99, 113.06)#최종 위치
 
+cup11 = posx(544.3, -286.47, 62.61, 148.1, 180, 147.59)
+cup23 = posx(659.79, -91.69, 61.32, 96.38, -178.13, 95.67)
+
+ice11 = posx(557.67, 79.51, 15, 90.21, -179.41, 90.86)
+ice23 = posx(696.42, 260.37, 15, 75.4, 177.23, 75.09)
 
 def main():
     tp_log("main called")
 
-    movej(home_j, vv, aa)
+    movej(home_j)
     release()
-    grab_place(get_cup_cord(), cord1, "cup")
-    grab_place(get_ice_cord(), cord2, "ice")
+    grab_place(cup11, cord1, 50, 50, "cup")
+    grab_place(ice11, cord2, 100,20, "ice")
     grab_shake()
-    #serve()
+    serve()
     
     #movej(home_j, vv, aa)
 
