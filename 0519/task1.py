@@ -9,16 +9,16 @@ def grab():
     set_digital_output(1,1)
     set_digital_output(2,1)
     wait(1)
-
+    
 def release():
     set_digital_output(2,0)
     set_digital_output(1,1)
 
 
-def force_control_on():
+def force_control_on(force_z):
     k_d = [500.0,500.0,500.0,  200.0,200.0,200.0]
     task_compliance_ctrl(k_d)
-    f_d = [0,0,-20,0.0,0.0,0.0]
+    f_d = [0,0,force_z,0.0,0.0,0.0]
     f_dir = [0,0,1,0,0,0]
     set_desired_force(f_d,f_dir)
 
@@ -56,8 +56,24 @@ def grab_place(src, des):
     # 내리고 놓고 올리기
     movelz(-height)
     
+def pulloff():
+    force_control_on(10)
+    
+    for i in range(3):
+        curr = get_current_posx()[0]
+        curr[4] += 3
+        movel(curr, 10, 10)
+        wait(0.1)
+    
+    force_control_off()
+    
+
+    
     
 #################################################
+
+
+
 
 
 set_va(80,80)
@@ -70,17 +86,23 @@ release()
 
 p1 = posx(422.71, -228.1, 11.43, 152.36, 180, 151.34)
 p2 = posx(518.75, 21.5, 16.87, 0.65, -179.96, -0.51)
+p2 = posx(518.75, 21.5, 30, 0.65, -179.96, -0.51)
+
 
 grab_place(p1,p2)
 
-force_control_on()
+force_control_on(-20)
 while True:
     t = get_tool_force()
     if t[2] > 20:
         z = get_current_posx()[0][2]
-        if z < 30:
+        if z < 15:
             force_control_off()
+            break
+            
+wait(1)
 
+pulloff()
     
 
 
