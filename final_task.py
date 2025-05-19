@@ -1,5 +1,12 @@
 
 
+def set_va(jvel, jacc,xvel, xacc):
+    """속도 가속도 초기화"""
+    set_velj(jvel)
+    set_accj(jacc)
+    set_velx(xvel)
+    set_accx(xacc)
+
 def grab(obj='cup'):
     if obj == 'cup':
         grab_cup()
@@ -49,29 +56,28 @@ def grab_place(src, des, obj='cup'):
     height = get_current_posx()[0][2] - src[2]
 
     # z값 유지하면서 이동
-    src[2] = get_current_posx()[0][2]
-    movel(src, vv, aa)
+    src_ = trans(src,[0,0,0, 0,0,0], DR_BASE, DR_BASE)
+    src_[2] = get_current_posx()[0][2]
+    movel(src_)
     
     # 내려서 잡고 올리기
-    movel([0,0,-height, 0,0,0], vv, aa, mod=1)
+    movel([0,0,-height, 0,0,0], mod=1)
     grab(obj)
     wait(0.5)
-    movel([0,0,upheight, 0,0,0], vv, aa, mod=1)
+    movel([0,0,upheight, 0,0,0], mod=1)
     
     #내려갈값 구하기
     height = get_current_posx()[0][2] - des[2]
     
      # z값 유지하면서 이동
-    des[2] = get_current_posx()[0][2]
-    movel(des, vv, aa)
-    wait(0.5)
+    des_ = trans(des,[0,0,0, 0,0,0], DR_BASE, DR_BASE)
+    des_[2] = get_current_posx()[0][2]
+    movel(des_)
     
     # 내리고 놓고 올리기
     movelz(-height)
     release()
     movelz(upheight)
-    
-
     
 
 def get_cup_cord():
@@ -92,7 +98,6 @@ def grab_shake():
     movel(posx(300, 100, 68.39, 128.1, -178, 140.41), vv, aa)
     grab_cup()
     movelz(200)
-    
     
     p1 = posx(457.67, 16.53, 167.47, 13.12, -176.54, 2.42)
     movel(p1,60,60)
@@ -115,20 +120,16 @@ def serve():
     
 
 ################################################ code start
+
+set_va(100, 100, 100, 100)  # 속도 가속도 초기화
     
 home_j = posj(0,0,90, 0,90,0)             # 초기위치
 home = posx(368, 6.25, 425, 19.57, 180, 19.57)
-
 
 cord1 = posx(300, 100, 68.39, 128.1, -178, 140.41)                          #컵 놓는 위치
 cord2 = trans(cord1, [0,0,50, 0,0,0], DR_BASE, DR_BASE)             #얼음 놓는 위치
 cord_final = trans(cord1, [0,-50,0, 0,0,0], DR_BASE, DR_BASE)      #최종 위치
 
-
-
-
-# 기본 속도, 가속도
-vv, aa = 120, 120
 
 def main():
     tp_log("main called")
@@ -144,17 +145,4 @@ def main():
 
     
 #if __name__ == "__main__":
-if True:
-    main()
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+main()
