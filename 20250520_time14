@@ -1,0 +1,190 @@
+# 이 코드는 원래 ROS 기반 스크립트를 DART Studio 호환 형태로 변환한 것입니다.
+# ROS 의존성을 제거하고 DART API만 사용하도록 구성되어 있습니다.
+
+from DSR_ROBOT import *
+
+ROBOT_ID = "dsr01"
+ROBOT_MODEL = "m0609"
+set_robot(ROBOT_ID, ROBOT_MODEL)
+
+ON, OFF = 1, 0
+HOME_READY = [0, 0, 90, 0, 90, 0]
+VELOCITY, ACC = 40, 40
+
+set_tool("Tool Weight_2FG")
+set_tcp("2FG_TCP")
+
+# 지정된 디지털 입력 신호가 감지될 때까지 대기하는 함수
+# sig_num: 감지할 디지털 입력 번호
+# True 상태가 될 때까지 반복 확인
+def wait_digital_input(sig_num):
+    while not get_digital_input(sig_num):
+        wait(0.5)
+        tp_popup("디지털 입력 대기 중", DR_PM_MESSAGE)
+        pass
+
+# 집게를 열어서 물체를 놓는 동작
+# DO2: ON, DO1: OFF 상태로 설정
+# DO2가 True 상태가 될 때까지 대기
+def release():
+    set_digital_output(2, ON)
+    set_digital_output(1, OFF)
+    wait_digital_input(2)
+
+# 집게를 닫아서 물체를 잡는 동작
+# DO1: ON, DO2: OFF 상태로 설정
+# DO1이 True 상태가 될 때까지 대기
+def grip():
+    set_digital_output(1, ON)
+    set_digital_output(2, OFF)
+    wait_digital_input(1)
+
+# 박스 클래스 정의
+class Box:
+    def __init__(self, id, pos_id, position):
+        self.id = id  # 박스 고유 ID
+        self.pos_id = pos_id  # 위치 식별자 (예: A1, B2)
+        self.position = position  # 좌표 정보 [x, y, z, rx, ry, rz]
+        self.target_offset = 100  # 쌓기 시 오프셋 거리
+        self.stacked = False  # 현재 쌓여 있는지 여부
+
+    def set_pos_id(self, pos_id):
+        self.pos_id = pos_id
+
+    def set_box_id(self, id):
+        self.id = id
+
+    def set_position(self, pos_list):
+        self.position = cb
+
+    def info(self):
+        return f"id : {self.id}\nposition : {self.pos_id} -> {self.position}\n=====\n"
+
+    # 목표 좌표로 이동하고, 필요한 경우 집거나 놓는 동작을 수행
+    def __move_to_pos(self, target_pos, action=None):
+        init_pos = get_current_posx()
+        tp_popup("초기 위치: {0}".format(init_pos), DR_PM_MESSAGE)
+        mwait()
+
+        ready_pos = list(init_pos)
+        ready_pos[2] = 350  # 작업을 위한 Z 높이 설정
+
+        tp_popup("대기 위치로 이동 중", DR_PM_MESSAGE)
+        movel(ready_pos, vel=VELOCITY, acc=ACC, mod=0)
+        mwait()
+
+        tp_popup("타겟 위치로 이동 중", DR_PM_MESSAGE)
+        movel(target_pos, vel=VELOCITY, acc=ACC, mod=0)
+        tp_popup("타겟 위치: {0}".format(target_pos), DR_PM_MESSAGE)
+        mwait()
+
+        if action == 'grip':
+            grip()
+        elif action == 'release':
+            release()
+
+        movel(ready_pos, vel=VELOCITY, acc=ACC, mod=0)
+        movej(HOME_READY, vel=VELOCITY, acc=ACC)
+        return target_pos
+
+    # 박스를 지정된 위치에 놓는 함수
+    def stack(self):
+        if self.stacked:
+            tp_popup("박스 {0} 는 이미 쌓여 있습니다!".format(self.id), DR_PM_MESSAGE)
+            return
+        if not self.position:
+            tp_popup("쌓을 위치 정보가 없습니다.", DR_PM_ALARM)
+            return
+        self.__move_to_pos(self.position, action='release')
+        self.stacked = True
+
+    # 박스를 지정된 위치에서 들어올리는 함수
+    def unstack(self):
+        if not self.stacked:
+            tp_popup("박스 {0} 는 이미 비어 있습니다!".format(self.id), DR_PM_MESSAGE)
+            return
+        if not self.position:
+            tp_popup("쌓을 위치 정보가 없습니다.", DR_PM_ALARM)
+            return
+        self.__move_to_pos(self.position, action='grip')
+        self.stacked = False
+
+# 순응제어 기반으로 Z축 힘을 감지하고 집게 동작을 수행하는 함수
+# 안전하게 물체를 감지하고 집게로 집은 후, 다시 초기 위치로 복귀
+def to_grip():
+    movej(HOME_READY, vel=VELOCITY, acc=ACC)
+    grip()
+    mwait()
+    movel([0,0,-100,0,0,0], vel=VELOCITY, acc=ACC, mod=1)
+    task_compliance_ctrl(stx=[500, 500, 500, 100, 100, 100])
+    wait(1.0)
+    set_desired_force(fd=[0, 0, -10, 0, 0, 0], dir=[0, 0, 1, 0, 0, 0], mod=DR_FC_MOD_REL)
+    while not check_force_condition(DR_AXIS_Z, max=5):
+        pass
+    tp_popup("순응제어 종료", DR_PM_MESSAGE)
+    release_force()
+    release_compliance_ctrl()
+    wait(1.0)
+    movel([0,0,20,0,0,0], vel=VELOCITY, acc=ACC, mod=1)
+    release()
+    movel([0,0,-35,0,0,0], vel=VELOCITY, acc=ACC, mod=1)
+    grip()
+    movej(HOME_READY, vel=VELOCITY, acc=ACC)
+
+# 메인 실행 함수: 아래에 쌓인 박스(A)를 위에 쌓인 박스(B)로 이동시키며 분류 작업 수행
+# to_grip 함수 수정 (현재 Z 좌표 반환 추가)
+def to_grip_and_get_z():
+    movej(HOME_READY, vel=VELOCITY, acc=ACC)
+    grip()
+    mwait()
+    movel([0,0,-100,0,0,0], vel=VELOCITY, acc=ACC, mod=1)
+    task_compliance_ctrl(stx=[500, 500, 500, 100, 100, 100])
+    wait(1.0)
+    set_desired_force(fd=[0, 0, -10, 0, 0, 0], dir=[0, 0, 1, 0, 0, 0], mod=DR_FC_MOD_REL)
+    while not check_force_condition(DR_AXIS_Z, max=5):
+        pass
+    release_force()
+    release_compliance_ctrl()
+    wait(1.0)
+    
+    # 현재 위치 얻기 (특히 Z축)
+    current_pos = get_current_posx()
+    z_value = current_pos[2]
+    
+    movel([0,0,20,0,0,0], vel=VELOCITY, acc=ACC, mod=1)
+    release()
+    movel([0,0,-35,0,0,0], vel=VELOCITY, acc=ACC, mod=1)
+    grip()
+    movej(HOME_READY, vel=VELOCITY, acc=ACC)
+    
+    return z_value
+
+
+def main():
+    # A 파레트 위치 (레고 블럭용, 아래층)
+    a_positions = [
+        [100, 100, 150, 0, 180, 0],
+        # ... 나머지 좌표들 ...
+    ]
+    # B 파레트 위치 (컵용, 위층)
+    b_positions = [
+        [400, 100, 150, 0, 180, 0],
+        # ... 나머지 좌표들 ...
+    ]
+    
+    for i in range(9):  # 예를 들어 9개 검사
+        box = Box(i, f"A{i+1}", a_positions[i])
+        box.unstack()  # A에서 물건 집기
+
+        z_height = to_grip_and_get_z()  # Z 높이 확인
+        
+        if z_height >= 60:  # 컵: 위쪽 B 파레트에 놓기
+            box.set_position(b_positions[i])
+            box.set_pos_id(f"B{i+1}")
+        else:  # 레고 블럭: 아래쪽 A 파레트에 다시 놓기
+            box.set_position(a_positions[i])
+            box.set_pos_id(f"A{i+1}")
+
+        box.stack()  # 분류된 위치에 박스 놓기
+
+main()
