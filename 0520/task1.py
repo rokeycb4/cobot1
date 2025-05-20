@@ -154,13 +154,13 @@ middle = 60.61
 ##################################################### code start
 set_va(100, 100, 100, 100)
 
-home_j = posj(0,0,90, 0,90,0)             # 초기위치
+home_j = posj(0,0,90, 0,90,0)             
 home = posx(367.3, 7.07, 204.32, 89.42, 179.98, 89.33)
 movej(home_j)
 release()
 # 정렬 시작
 for src in src_cord:
-    movel(home)  # 홈 포지션으로 복귀 (안정성 확보)
+    movel(home)  # 홈 포지션으로 복귀 
 
     # 높이 측정
     h = get_height(src)
@@ -172,6 +172,6 @@ for src in src_cord:
     curr[2] -= 50
     grab_place(curr, des, upheight=80, upheightd=50)
     
-    #
+
 
 
