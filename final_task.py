@@ -215,15 +215,11 @@ def pour():
     movel(pos_pour)
     
 def milk_return():
-    movelz(50) # 낮출수 있는지
-    
-    #movel(pos_mmilk)
-
-    
+    """우유 따르고 원위치"""
+    movelz(50) 
     des = milk_shelf.get_milk_cord()
     movel(des)
     release()
-    
     movel(pos_mmilk)
     
     movej(home_j)
