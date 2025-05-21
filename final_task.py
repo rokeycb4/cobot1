@@ -184,17 +184,6 @@ def grab_place(src, des, upheight, upheightd, obj='cup'):
     movelz(upheightd)
     
 
-def get_cup_cord():
-    """다음 컵 위치 반환"""
-    res = posx(573.4, -225.6, 68.39, 128.1, -178, 140.41)      # 임시값
-    return  res
-    
-    
-def get_ice_cord():
-    """다음 얼음 위치 반환"""
-    res = posx(574.28, 220.44, 25.62, 94.08, 177.04, 96.26)      # 임시값
-    return  res
-    
 def grab_shake():
     """컵 집어서 흔들기"""
     tp_log("grab_shake() called")
@@ -207,29 +196,35 @@ def grab_shake():
     amove_periodic([0,0,30,0,0,0],1.0 ,0.02 ,2,DR_TOOL)
     wait(3)
 
-def pour(src):
+def pour():
     """우유 잡아서 붓기"""
+    src = milk_shelf.get_milk_cord()
+    
     movel(src)
     grab()
     wait(0.5)
     
-    movel(pos_mmilk)
-    movelz(80)
+    amovel(pos_mmilk, vel=170, acc=170)
+    wait(1)
+    movelz(40, 50, 50)
     movel(pos_mmilk2)
 
     movel(pos_pour)
     
 def milk_return():
-    movelz(80) # 낮출수 있는지
-    movel(pos_mmilk)
-    des = milk_shelf.get_milk_cord()
+    movelz(50) # 낮출수 있는지
     
+    #movel(pos_mmilk)
+
+    
+    des = milk_shelf.get_milk_cord()
     movel(des)
     release()
     
     movel(pos_mmilk)
     
     movej(home_j)
+    
 
 def throw_away():
     """컵 쓰레기통에 버리기"""
@@ -320,26 +315,39 @@ def place_ice():
     movej(ice_place)
 
     release()
-    wait(0.2)
+    wait(0.5)
 
 def make_americano():
-    tp_log("make_americano called")
+    tp_log("make_latte called")
     movej(posj(0,0,90, 0,90,0)) # 홈 이동
     release()
     
     # place cup
-    next_cup = cup_shelf.get_cup_cord()
     #cup_shelf.pop()
-    movel(cup_upper)
-    grab_place(next_cup, cup_place, 50, 50, "cup")
+    movel(cup_upper)  # 중간 좌표
     
-    # place ice
+    # 다음 컵 집기
+    next_cup = cup_shelf.get_cup_cord()
+    movel(next_cup)
+    grab_cup()
+    
+    # 컵위치에 놓기
+    movej(cup_upper2) # cup_place가는 중간 좌표
+    #movej(cup_place_upper_j)
+    movej(cup_place_upper_j)
+    movel(cup_place)
+
+    release()
+    wait(0.3)
+    movelz(50)
+               
+    ## place ice
     place_ice()
     #ice_shelf.pop()
     
     # shake
     grab_shake()
-    serve()    
+    serve()
     
     
 def make_latte():
@@ -348,14 +356,26 @@ def make_latte():
     release()
     
     # place cup
-    next_cup = cup_shelf.get_cup_cord()
     #cup_shelf.pop()
-    movel(cup_upper)
-    grab_place(next_cup, cup_place, 50, 50, "cup")
+    movel(cup_upper)  # 중간 좌표
     
+    # 다음 컵 집기
+    next_cup = cup_shelf.get_cup_cord()
+    movel(next_cup)
+    grab_cup()
+    
+    # 컵위치에 놓기
+    movej(cup_upper2) # cup_place가는 중간 좌표
+    #movej(cup_place_upper_j)
+    movej(cup_place_upper_j)
+    movel(cup_place)
+
+    release()
+    wait(0.3)
+    movelz(50)
+        
     # place milk
-    next_milk = milk_shelf.get_milk_cord()
-    pour(next_milk)
+    pour()
     milk_return()
             
     # place ice
@@ -375,7 +395,13 @@ set_va(100, 100, 140, 140)  # 속도 가속도 초기화
 home_j = posj(0,0,90, 0,90,0)
 home = posx(367.31, 7.07, 204.32, 88.13, 179.98, 88.03)
 
-cup_place = posx(418.21, -81, 68.18, 154.1, 180, 64.92)                                                       #컵 놓는 위치
+cup_place = posx(418.21, -81, 68.18, 154.1, 180, 64.92)  
+cup_place_j = posj(-11.9, 11.47, 98.88, -0.04, 69.65, -100.97)
+       
+cup_place_upper = posx(418.21, -81, 75, 154.1, 180, 64.92)   # cup_place 보다다 살짝 위
+cup_place_upper_j = posj(-11.9, 11.14, 98.15, -0.04, 70.71, -100.97)     
+               
+                                                     #컵 놓는 위치
 #ice_place = trans(cup_place, [0,0,75, 0,0,0], DR_BASE, DR_BASE)    #얼음 놓는 위치(컵 위치보다 살짝 위)
 ice_place = posj(-11.64, 9.1, 91.78, -0.04, 79.12, -100.72)
 
@@ -383,6 +409,8 @@ ice_place = posj(-11.64, 9.1, 91.78, -0.04, 79.12, -100.72)
 shake_place = posx(300, 100, 62, 128.1, -178, 140.41)                       #shake할 때 컵 다시 잡는 위치
 cord_final = posx(306.45, -378.25, 131.33, 112.06, -179.99, 113.06)      #최종 위치(서빙 위치)
 cup_upper = posx(309.74, 453.92, 251.67, 56.44, -179.99, -123.17)
+cup_upper2 = posj(51.64, 20.86, 41.77, -0.93, 116.2, -123.24)
+
 
 
 # 선반 좌표 (클래스 기반)
@@ -392,18 +420,23 @@ milk_first = posx(324.85, 529.94, 47.7, 95.53, 105.88, -87.2)
 
 # 우유 따르는 중간포즈, 포즈
 pos_mmilk = posx(361.72, 297.42, 175.46, 81.12, 102.16, -90.42)
+pos_mmilk_j = posj(-7.14, 11.96, 129.86, 83.84, 79.28, 128.5)
+
+
+
 pos_mmilk2 = posx(462.24, -144.77, 176.01, 32, 95.81, -86.05)
 pos_pour = posx(455.1, -99.27, 142.4, 40.23, 102.38, 159.51)
+
 
 # 선반 객체 생성
 cup_shelf = CupShelf(cnt = 1, first=cup_first, interval=80)
 ice_shelf = IceShelf(cnt = 1, first=ice_first, interval=80)  # 결합된 레고
 milk_shelf = MilkShelf(cnt = 1, first=milk_first, interval=80)
 
-
  # (적재할때) 잡는 위치
 cup_load = home
-ice_load = home
+ice_load = posx(274.88, -77.32, 16.27, 13.79, -180, 14.63)
+ice_load_j = posj(-17.09, -4.3, 124.83, 0.01, 59.47, -16.15)
 milk_load = home
 
 
