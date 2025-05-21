@@ -1,4 +1,3 @@
-
 ############################################################# 선반스택
 
 class Shelf:
@@ -12,7 +11,7 @@ class Shelf:
         self.build_stack()
 
     def build_stack(self):
-        """기본 방향: x 증가 (아래), y 감소 (오른쪽)"""
+        """기본 방향: x 증가, y 감소"""
         self.stack = []
         for i in range(self.row):
             for j in range(self.col):
@@ -46,15 +45,7 @@ class CupShelf(Shelf):
 
     def get_cup_cord(self):
         return self.get_last_cord()
-
-
-class IceShelf(Shelf):
-    def __init__(self, cnt=0, first=posx(0, 0, 0, 0, 0, 0), interval=0):
-        super().__init__(cnt, first, interval, row=1, col=3)
-
-    def get_ice_cord(self):
-        return self.get_last_cord()
-
+        
 
 class MilkShelf(Shelf):
     def __init__(self, cnt=0, first=posx(0, 0, 0, 0, 0, 0), interval=0):
@@ -64,14 +55,14 @@ class MilkShelf(Shelf):
         return self.get_last_cord()
 
 
-class IceShelf2(Shelf):
+class IceShelf(Shelf):
     def __init__(self, cnt=0, first=posx(0, 0, 0, 0, 0, 0), interval=0):
         super().__init__(cnt, first, interval, row=2, col=3)
         self.upper_stack = []
         self.build_upper_stack()
 
     def build_stack(self):
-        """IceShelf2 방향: x 감소, y 감소"""
+        """IceShelf 방향: x 감소, y 감소"""
         self.stack = []
         for i in range(self.row):
             for j in range(self.col):
@@ -132,10 +123,9 @@ def release():
     set_digital_output(2,0)
     set_digital_output(1,1)
     
-def movelz(z):
+def movelz(z, vel_=100, acc_=100):
     """z축 상대좌표 이동"""
-    movel([0,0,z,  0,0,0], mod=1)     
-
+    movel([0,0,z,  0,0,0], vel=vel_, acc=acc_ ,mod=1)     
 
 def force_control_on(force_z):
     """ z방향 힘제어"""
@@ -158,7 +148,6 @@ def grab_place(src, des, upheight, upheightd, obj='cup'):
     #내려갈값 구하기
     height = get_current_posx()[0][2] - src[2]
     
-
     ## z값 유지하면서 이동
     #src_ = trans(src,[0,0,0, 0,0,0], DR_BASE, DR_BASE)
     #src_[2] = get_current_posx()[0][2]
@@ -231,7 +220,7 @@ def pour(src):
     movel(pos_pour)
     
 def milk_return():
-    movelz(80)
+    movelz(80) # 낮출수 있는지
     movel(pos_mmilk)
     des = milk_shelf.get_milk_cord()
     
@@ -273,12 +262,6 @@ def load_cup(src, cup_shelf):
     grab_place(src, des)
     
     
-def load_ice(src, ice_shelf):
-    """src에서 얼음 집어서 선반 다음 위치에 놓기"""
-    ice_shelf.push()
-    des = ice_shelf.get_cup_cord()
-    grab_place(src, des)
-    
 def load_milk(src, milk_shelf):
     """src에서 우유 집어서 선반 다음 위치에 놓기"""
     milk_shelf.push()
@@ -291,7 +274,7 @@ def load_milk(src, milk_shelf):
 legoh = None #레고 들어간거 확인
     
 # 레고 + 힘제어 버전
-def load_ice2():
+def load_ice():
     release()
     
     # 얼음 잡기
@@ -299,8 +282,8 @@ def load_ice2():
     grab_ice()
     
     # 레고판 다음 얼음 위치 위(upper) 이동
-    ice_shelf2.push()
-    des = ice_shelf2.get_upper_cord()
+    ice_shelf.push()
+    des = ice_shelf.get_upper_cord()
     movel(des)
     
     force_control_on(-20)
@@ -317,8 +300,8 @@ def load_ice2():
             
 def place_ice():
     """레고판에서 얼음 떼서 컵에 놓기"""
-    src = ice_shelf2.get_ice_cord()
-    #ice_shelf2.pop()
+    src = ice_shelf.get_ice_cord()
+    #ice_shelf.pop()
     
     # 레고판 위로 이동
     movel(src)
@@ -327,14 +310,13 @@ def place_ice():
     grab("ice")
     wait(1)
     force_control_on(10)
-    movel([0,0,0,  0,3,0], 0.5,0.5, mod=1)
+    movel([0,0,0,  0,3,0], 1,1, mod=1)
     wait(0.5)    
     force_control_off()
     movel([0,0,0,  0,-3,0], 1,1, mod=1)
     
     movelz(100)
     
-    #movel(ice_place)
     movej(ice_place)
 
     release()
@@ -353,7 +335,7 @@ def make_americano():
     
     # place ice
     place_ice()
-    #ice_shelf2.pop()
+    #ice_shelf.pop()
     
     # shake
     grab_shake()
@@ -378,7 +360,7 @@ def make_latte():
             
     # place ice
     place_ice()
-    #ice_shelf2.pop()
+    #ice_shelf.pop()
     
     # shake
     grab_shake()
@@ -388,9 +370,7 @@ def make_latte():
 ################################################ code start
 
 
-
-
-set_va(140, 140, 140, 140)  # 속도 가속도 초기화
+set_va(100, 100, 140, 140)  # 속도 가속도 초기화
 
 home_j = posj(0,0,90, 0,90,0)
 home = posx(367.31, 7.07, 204.32, 88.13, 179.98, 88.03)
@@ -402,30 +382,22 @@ ice_place = posj(-11.64, 9.1, 91.78, -0.04, 79.12, -100.72)
 #ice_place = posx([i for i in cup_place])
 shake_place = posx(300, 100, 62, 128.1, -178, 140.41)                       #shake할 때 컵 다시 잡는 위치
 cord_final = posx(306.45, -378.25, 131.33, 112.06, -179.99, 113.06)      #최종 위치(서빙 위치)
-
 cup_upper = posx(309.74, 453.92, 251.67, 56.44, -179.99, -123.17)
 
-# 선반안에 컵 위치 (클래스 쓸꺼면 삭제)
-cup11 = posx(544.3, -286.47, 62.61, 148.1, 180, 147.59)
-cup23 = posx(659.79, -91.69, 61.32, 96.38, -178.13, 95.67)
 
-ice11 = posx(557.67, 79.51, 15, 90.21, -179.41, 90.86)
-ice23 = posx(696.42, 260.37, 15, 75.4, 177.23, 75.09)
-
-# 선반안 좌표 (클래스 기반)
+# 선반 좌표 (클래스 기반)
 cup_first = posx(309.16, 481.47, 250.6, 67.32, -178.93, -112.44) # 수정필요
-ice_first = home
-ice_first2 = posx(683.57, 76.19, 19.5, 129.77, 178.08, 41.15)
+ice_first = posx(683.57, 76.19, 19.5, 129.77, 178.08, 41.15)
 milk_first = posx(324.85, 529.94, 47.7, 95.53, 105.88, -87.2)
 
+# 우유 따르는 중간포즈, 포즈
 pos_mmilk = posx(361.72, 297.42, 175.46, 81.12, 102.16, -90.42)
 pos_mmilk2 = posx(462.24, -144.77, 176.01, 32, 95.81, -86.05)
 pos_pour = posx(455.1, -99.27, 142.4, 40.23, 102.38, 159.51)
 
-
+# 선반 객체 생성
 cup_shelf = CupShelf(cnt = 1, first=cup_first, interval=80)
-ice_shelf = IceShelf(cnt = 1, first=ice_first, interval=80)
-ice_shelf2 = IceShelf2(cnt = 1, first=ice_first2, interval=80)  # 결합된 레고
+ice_shelf = IceShelf(cnt = 1, first=ice_first, interval=80)  # 결합된 레고
 milk_shelf = MilkShelf(cnt = 1, first=milk_first, interval=80)
 
 
@@ -435,12 +407,11 @@ ice_load = home
 milk_load = home
 
 
-
 def main():
     tp_log("main called")
     movej(posj(0,0,90, 0,90,0)) # 홈 이동
     release()
-      
+          
     force_control_on(0)
     while True:
         tk = get_tool_force()
