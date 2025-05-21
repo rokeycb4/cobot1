@@ -53,3 +53,4 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 ## Reference
 - https://github.com/ROKEY-SPARK/DoosanBootcamp
+- https://manual.doosanrobotics.com/ko/programming/2.11.2/Publish/
