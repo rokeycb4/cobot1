@@ -227,12 +227,12 @@ def milk_return():
 
     
 def serve():
-    """서빙 위치로 이동후 놓기"""
+    """서빙 위치로 이동후 음료 가져갈때 까지 대기"""
     tp_log("serve() called")
     
     movel(cord_final)
     
-    # 컵뽑으면 집게 열고 홈 위치로 이동
+    # 컵 뽑으면 집게 열고 홈 위치로 이동
     k_d = [3000,3000,3000,200,200,200]
     task_compliance_ctrl(k_d)
     while True:
