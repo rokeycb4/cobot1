@@ -1,3 +1,6 @@
+
+
+
 ############################################################# 선반스택
 
 class Shelf:
@@ -226,12 +229,6 @@ def milk_return():
     movej(home_j)
     
 
-def throw_away():
-    """컵 쓰레기통에 버리기"""
-    movel(trashcan_place)
-    release()
-    wait(0.5)
-    
     
 def serve():
     """서빙 위치로 이동후 놓기"""
@@ -266,7 +263,7 @@ def load_milk(src, milk_shelf):
 
     
 ## 결합된 레고 넣고 빼기
-legoh = None #레고 들어간거 확인
+legoh = 19.5 #레고 들어간거 확인
     
 # 레고 + 힘제어 버전
 def load_ice():
@@ -275,6 +272,7 @@ def load_ice():
     # 얼음 잡기
     movel(ice_load)
     grab_ice()
+    wait(0.5)
     
     # 레고판 다음 얼음 위치 위(upper) 이동
     ice_shelf.push()
@@ -286,13 +284,37 @@ def load_ice():
     # 레고 들어갈떄까지 대기
     while True:
         curr_z = get_current_posx()[0][2]
-        if curr_z < legoh+3:  # 
+        if curr_z < legoh+1:  # 
             release()
             force_control_off()
+            break
             
         
         wait(0.2)
-            
+        
+    movelz(15)
+
+    
+def place_cup():
+    # place cup
+    #cup_shelf.pop()
+    movel(cup_upper)  # 중간 좌표
+    
+    # 다음 컵 집기
+    next_cup = cup_shelf.get_cup_cord()
+    movel(next_cup)
+    grab_cup()
+    
+    # 컵위치에 놓기
+    movej(cup_upper2) # cup_place가는 중간 좌표
+    movej(cup_place_upper_j)
+    movel(cup_place)
+
+    release()
+    wait(0.3)
+    movelz(50)
+
+    
 def place_ice():
     """레고판에서 얼음 떼서 컵에 놓기"""
     src = ice_shelf.get_ice_cord()
@@ -414,7 +436,7 @@ cup_upper2 = posj(51.64, 20.86, 41.77, -0.93, 116.2, -123.24)
 
 
 # 선반 좌표 (클래스 기반)
-cup_first = posx(309.16, 481.47, 250.6, 67.32, -178.93, -112.44) # 수정필요
+cup_first = posx(309.16, 481.47, 250.6, 67.32, -178.93, -112.44)
 ice_first = posx(683.57, 76.19, 19.5, 129.77, 178.08, 41.15)
 milk_first = posx(324.85, 529.94, 47.7, 95.53, 105.88, -87.2)
 
@@ -432,6 +454,7 @@ pos_pour = posx(455.1, -99.27, 142.4, 40.23, 102.38, 159.51)
 cup_shelf = CupShelf(cnt = 1, first=cup_first, interval=80)
 ice_shelf = IceShelf(cnt = 1, first=ice_first, interval=80)  # 결합된 레고
 milk_shelf = MilkShelf(cnt = 1, first=milk_first, interval=80)
+
 
  # (적재할때) 잡는 위치
 cup_load = home
