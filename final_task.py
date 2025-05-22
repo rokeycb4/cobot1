@@ -248,8 +248,8 @@ def serve():
             break
             
             
-def load_cup(src, cup_shelf):
-    """src에서 컵 집어서 선반 다음 위치에 놓기"""
+def load_cup():
+    """cup_load에서 컵 집어서 선반 다음 위치에 놓기"""
     cup_shelf.push()
     des = cup_shelf.get_cup_cord()
     
@@ -257,7 +257,7 @@ def load_cup(src, cup_shelf):
     grab_cup()
     wait(1)
     
-    movel(cup_upper)
+    movej(cup_upper2)
     movel(des)
     release()
     
@@ -275,11 +275,11 @@ def load_milk():
 legoh = 19.5 #레고 들어간거 확인
     
 # 레고 + 힘제어 버전
-def load_ice():
+def load_ice(il):
     release()
     
     # 얼음 잡기
-    movel(ice_load)
+    movel(il)
     grab_ice()
     wait(0.5)
     
@@ -299,14 +299,14 @@ def load_ice():
             break
             
         
-        wait(0.2)
+        wait(0.3)
         
     movelz(15)
 
     
 def place_cup():
     # place cup
-    movel(cup_upper)  # 중간 좌표
+    movej(cup_upper)  # 중간 좌표
     
     # 다음 컵 집기
     next_cup = cup_shelf.get_cup_cord()
@@ -436,8 +436,8 @@ pos_pour = posx(455.1, -99.27, 142.4, 40.23, 102.38, 159.51)
 
 
 # 선반 객체 생성
-cup_shelf = CupShelf(cnt = 1, first=cup_first, interval=120)
-ice_shelf = IceShelf(cnt = 2, first=ice_first, interval=80)
+cup_shelf = CupShelf(cnt = 2, first=cup_first, interval=120)
+ice_shelf = IceShelf(cnt = 4, first=ice_first, interval=80)
 milk_shelf = MilkShelf(cnt = 1, first=milk_first, interval=80)
 
 
@@ -445,6 +445,8 @@ milk_shelf = MilkShelf(cnt = 1, first=milk_first, interval=80)
 cup_load = posx(275.37, -82, 58.32, 85.22, -174.48, -6.79)
 ice_load = posx(274.88, -77.32, 16.27, 13.79, -180, 14.63)
 ice_load_j = posj(-17.09, -4.3, 124.83, 0.01, 59.47, -16.15)
+ice_load2 = posx(274.88, -112.32, 16.27, 13.79, -180, 14.63)
+
 milk_load = home
 
 
