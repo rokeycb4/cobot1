@@ -94,7 +94,7 @@ class IceShelf(Shelf):
             return None
         return self.upper_stack[self.cnt - 1]
 
-############################################################# 로봇스택
+############################################################# 로봇 동작 함수
 
 def set_va(jvel, jacc,xvel, xacc):
     """속도 가속도 초기화"""
