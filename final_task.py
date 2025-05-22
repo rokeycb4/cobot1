@@ -348,30 +348,6 @@ def place_ice():
     release()
     wait(0.5)
 
-def make_americano():
-    tp_log("make_americano called")
-
-    if cup_shelf.cnt == 0:
-        tp_log("에러: 컵이 부족합니다.")
-        movel(home)
-        return
-    if ice_shelf.cnt == 0:
-        tp_log("에러: 얼음이 부족합니다.")
-        movel(home)
-        return
-
-    movej(posj(0, 0, 90, 0, 90, 0))  # 홈 이동
-    release()
-
-    try:
-        place_cup()
-        place_ice()
-        grab_shake()
-        serve()
-    except Exception as e:
-        tp_log(f"make_americano 에러: {e}")
-        movel(home)
-
 def make_latte():
     tp_log("make_latte called")
     
@@ -399,7 +375,32 @@ def make_latte():
         grab_shake()
         serve()
     except Exception as e:
-        tp_log(f"make_latte 에러: {e}")
+        tp_log("make_latte 에러: {}".format(e))
+        movel(home)
+
+
+def make_americano():
+    tp_log("make_americano called")
+
+    if cup_shelf.cnt == 0:
+        tp_log("에러: 컵이 부족합니다.")
+        movel(home)
+        return
+    if ice_shelf.cnt == 0:
+        tp_log("에러: 얼음이 부족합니다.")
+        movel(home)
+        return
+
+    movej(posj(0, 0, 90, 0, 90, 0))  # 홈 이동
+    release()
+
+    try:
+        place_cup()
+        place_ice()
+        grab_shake()
+        serve()
+    except Exception as e:
+        tp_log("make_americano 에러: {}".format(e))
         movel(home)
 
 
