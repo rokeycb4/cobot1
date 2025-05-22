@@ -252,10 +252,18 @@ def load_cup(src, cup_shelf):
     """src에서 컵 집어서 선반 다음 위치에 놓기"""
     cup_shelf.push()
     des = cup_shelf.get_cup_cord()
-    grab_place(src, des)
+    
+    movel(cup_load)
+    grab_cup()
+    wait(1)
+    
+    movel(cup_upper)
+    movel(des)
+    release()
     
     
-def load_milk(src, milk_shelf):
+    
+def load_milk():
     """src에서 우유 집어서 선반 다음 위치에 놓기"""
     milk_shelf.push()
     des = milk_shelf.get_cup_cord()
@@ -403,8 +411,7 @@ ice_place = posj(-11.64, 9.1, 91.78, -0.04, 79.12, -100.72)
 #ice_place = posx([i for i in cup_place])
 shake_place = posx(300, 100, 62, 128.1, -178, 140.41)                       #shake할 때 컵 다시 잡는 위치
 cord_final = posx(306.45, -378.25, 131.33, 112.06, -179.99, 113.06)      #최종 위치(서빙 위치)
-cup_upper = posx(309.74, 453.92, 251.67, 56.44, -179.99, -123.17)
-cup_upper = posj(35.59, 2.74, 74.23, -0.79, 103.82, 38.42)  #바꾼거
+cup_upper = posj(35.59, 2.74, 74.23, -0.79, 103.82, 88.03)  #바꾼거
 cup_upper2 = posj(51.64, 20.86, 41.77, -0.93, 116.2, -123.24)
 
 
@@ -413,6 +420,7 @@ cup_upper2 = posj(51.64, 20.86, 41.77, -0.93, 116.2, -123.24)
 cup_first = posx(309.16, 481.47, 250.6, 67.32, -178.93, -112.44)
 cup_first = posx(239.49, 474.69, 240.93, 79.66, 180, 88.03) #바꾼거
 ice_first = posx(683.57, 76.19, 19.5, 129.77, 178.08, 41.15)
+ice_first = posx(681, 75, 19.5, 129.77, 178.08, 41.15)
 
 
 milk_first = posx(324.85, 529.94, 47.7, 95.53, 105.88, -87.2)
@@ -428,17 +436,16 @@ pos_pour = posx(455.1, -99.27, 142.4, 40.23, 102.38, 159.51)
 
 
 # 선반 객체 생성
-cup_shelf = CupShelf(cnt = 2, first=cup_first, interval=120)
-ice_shelf = IceShelf(cnt = 4, first=ice_first, interval=95)  # 결합된 레고
+cup_shelf = CupShelf(cnt = 1, first=cup_first, interval=120)
+ice_shelf = IceShelf(cnt = 2, first=ice_first, interval=80)
 milk_shelf = MilkShelf(cnt = 1, first=milk_first, interval=80)
 
 
  # (적재할때) 잡는 위치
-cup_load = home
+cup_load = posx(275.37, -82, 58.32, 85.22, -174.48, -6.79)
 ice_load = posx(274.88, -77.32, 16.27, 13.79, -180, 14.63)
 ice_load_j = posj(-17.09, -4.3, 124.83, 0.01, 59.47, -16.15)
 milk_load = home
-
 
 
 def main():
