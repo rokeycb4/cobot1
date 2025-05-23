@@ -15,16 +15,25 @@
 ## How to use  
   
 ### DART-Studio (Window)  
-`제어기 연결 설정` → `로봇 모델 설정`→`Request` → `Servo On` → `Automod` → 실행
+`제어기 연결 설정` → `로봇 모델 설정`→`Request` → `Servo On` → `Automode` → 실행
 
+<br>
 
 
 ### ROS2 패키지 (Ubuntu)  
 
 ```bash
 cd ros2_ws/src  #ros2 작업환경
-git clone
+git clone https://github.com/rokeycb4/cobot1.git
+
+cd ..
 colcon build
+source install/setup.bash
+
+export PYTHONPATH=$PYTHONPATH:~/ros2_ws/install/dsr_common2/lib/dsr_common2/imp
+ros2 launch ...
+ros2 run cobot1 americano_bot
+
 
 ```
 
