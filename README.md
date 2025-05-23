@@ -15,14 +15,17 @@
 ## How to use  
   
 ### DART-Studio (Window)  
-Request -> 
+`제어기 연결 설정` → `로봇 모델 설정`→`Request` → `Servo On` → `Automod` → 실행
 
 
 
-### ROS2 패키지 (Window)  
+### ROS2 패키지 (Ubuntu)  
 
 ```bash
+cd ros2_ws/src  #ros2 작업환경
+git clone
 colcon build
+
 ```
 
 
