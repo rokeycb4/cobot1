@@ -40,10 +40,13 @@ ros2 run cobot1 americano_bot
 <br>
 
 
-### Requirements
+### Enviroments
 
 ```
-  Python >= 3.10
+Python: 3.10.12
+Ubuntu 
+
+
 ```
 <br>
 <br>
@@ -76,6 +79,7 @@ ros2 run cobot1 americano_bot
 
 
 ### 적재 (스택 포인터 조정)
+![cobot1_7](https://github.com/user-attachments/assets/6cfa213b-e84f-45b1-a486-d38e3a06219e)
 
 
 ## License
