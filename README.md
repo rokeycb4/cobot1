@@ -40,16 +40,16 @@ ros2 run cobot1 americano_bot
 <br>
 
 
-### Enviroments
+### 🛠️ Environments
 
 ```
-Python: 3.10.12
-Ubuntu 
-
-
+- Python 3.10.12
+- DRL V2.12
+- Ubuntu 22.04.5 LTS (jammy)
+- ROS2 humble
+- Doosan M0609
 ```
-<br>
-<br>
+
 
 
 ## 시연 영상
