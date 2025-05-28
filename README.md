@@ -52,24 +52,30 @@ ros2 run cobot1 americano_bot
 ## 시연 영상
 
 ### 외력 줘서 제조 실행
-<br>
-![Image](https://github.com/user-attachments/assets/6ce0aa03-bf09-41a0-b35f-e6674414d1a3)
+![Image](https://github.com/user-attachments/assets/749bb68f-a878-47de-ae37-26e699a643c2)
+
+
+### 컵세팅  
+![cobot1_2](https://github.com/user-attachments/assets/b16fb909-83eb-4091-9f9d-b74611c4489b)
+
 
 ### 우유 넣기 
-<br>
+![cobot1_3](https://github.com/user-attachments/assets/d15126ff-1199-4e43-97b3-116de6d06439)
 
 
 ### 얼음 넣기
-<br>
+![cobot1_4](https://github.com/user-attachments/assets/090dc174-5001-44aa-9ab0-dab6b842aacf)
 
 
 ### 흔들어서 음료 섞기
-<br>
+![cobot1_5](https://github.com/user-attachments/assets/b8fad3ca-cf89-4b3a-9c78-5bd236d19f4d)
 
 
 ### 서빙
-<br>
+![cobot1_6](https://github.com/user-attachments/assets/ac6b6979-3ec4-4949-b66b-fcb1c9f06382)
 
+
+### 적재 (스택 포인터 조정)
 
 
 ## License
