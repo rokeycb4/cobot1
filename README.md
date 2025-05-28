@@ -59,9 +59,8 @@ ros2 run cobot1 americano_bot
 
 ### 외력 줘서 제조 실행
 <br>
+![cobot1_1](https://github.com/user-attachments/assets/147f2c10-827d-4add-9206-a792acf1b033)
 
-### 컵 세팅
-<br>
 
 ### 우유 넣기 
 <br>
