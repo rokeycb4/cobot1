@@ -1,0 +1,35 @@
+{
+  "configurations": [
+    {
+      "browse": {
+        "databaseFilename": "${default}",
+        "limitSymbolsToIncludedHeaders": false
+      },
+      "includePath": [
+        "/home/user/ros2_ws/install/ign_ros2_control/include/**",
+        "/home/user/ros2_ws/install/dsr_realtime_control/include/**",
+        "/home/user/ros2_ws/install/dsr_controller2/include/**",
+        "/home/user/ros2_ws/install/dsr_msgs2/include/**",
+        "/home/user/ros2_ws/install/dsr_hardware2/include/**",
+        "/home/user/turtlebot3_ws/install/turtlebot3_fake_node/include/**",
+        "/home/user/turtlebot3_ws/install/turtlebot3_msgs/include/**",
+        "/home/user/turtlebot3_ws/install/turtlebot3_gazebo/include/**",
+        "/home/user/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/include/**",
+        "/home/user/turtlebot3_ws/install/dynamixel_sdk/include/**",
+        "/opt/ros/humble/include/**",
+        "/home/user/ros2_ws/src/DoosanBootcamp/dsr_common2/include/**",
+        "/home/user/ros2_ws/src/DoosanBootcamp/dsr_controller2/include/**",
+        "/home/user/ros2_ws/src/DoosanBootcamp/dsr_example2/dsr_realtime_control/include/**",
+        "/home/user/ros2_ws/src/DoosanBootcamp/dsr_hardware2/include/**",
+        "/home/user/ros2_ws/src/gz_ros2_control/ign_ros2_control/include/**",
+        "/usr/include/**"
+      ],
+      "name": "ROS",
+      "intelliSenseMode": "gcc-x64",
+      "compilerPath": "/usr/bin/gcc",
+      "cStandard": "gnu11",
+      "cppStandard": "c++14"
+    }
+  ],
+  "version": 4
+}

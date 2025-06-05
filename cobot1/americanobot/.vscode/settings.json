@@ -1,0 +1,26 @@
+{
+    "python.autoComplete.extraPaths": [
+        "/home/user/ros2_ws/install/rokey/lib/python3.10/site-packages",
+        "/home/user/ros2_ws/install/pick_and_place_voice/lib/python3.10/site-packages",
+        "/home/user/ros2_ws/install/pick_and_place_text/lib/python3.10/site-packages",
+        "/home/user/ros2_ws/install/od_msg/local/lib/python3.10/dist-packages",
+        "/home/user/ros2_ws/install/dsr_visualservoing/lib/python3.10/site-packages",
+        "/home/user/ros2_ws/install/dsr_tests/lib/python3.10/site-packages",
+        "/home/user/ros2_ws/install/dsr_bringup2/lib/python3.10/site-packages",
+        "/home/user/ros2_ws/install/dsr_msgs2/local/lib/python3.10/dist-packages",
+        "/home/user/ros2_ws/install/dsr_example/lib/python3.10/site-packages",
+        "/home/user/turtlebot3_ws/build/turtlebot3_teleop",
+        "/home/user/turtlebot3_ws/install/turtlebot3_teleop/lib/python3.10/site-packages",
+        "/home/user/turtlebot3_ws/build/turtlebot3_example",
+        "/home/user/turtlebot3_ws/install/turtlebot3_example/lib/python3.10/site-packages",
+        "/home/user/turtlebot3_ws/install/turtlebot3_msgs/local/lib/python3.10/dist-packages",
+        "/home/user/turtlebot3_ws/install/dynamixel_sdk_custom_interfaces/local/lib/python3.10/dist-packages",
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages"
+    ],
+    "python.analysis.extraPaths": [
+        "/opt/ros/humble/lib/python3.10/site-packages",
+        "/opt/ros/humble/local/lib/python3.10/dist-packages",
+        "/home/kiwi/ros2_ws/install/dsr_common2/lib/dsr_common2/imp"
+    ]
+}
