@@ -1,5 +1,5 @@
 # 아메리카노 봇  
-**ROS2를 이용한 로봇자동화 공정 시스템 구현**
+**커피 제조 자동화 로봇**
 
 <br>
 <br>
@@ -23,18 +23,24 @@
 ### ROS2 패키지 (Ubuntu)  
 
 ```bash
-cd ros2_ws/src  #ros2 작업환경
+cd ~/ros2_ws/src  # ROS2 작업 공간으로 이동
 git clone https://github.com/rokeycb4/cobot1.git
 
+# (선택) 패키지 제외한 파일 삭제
+chmod +x clean_rest.sh
+./clean_rest.sh
+
+# 빌드
 cd ..
 colcon build
 source install/setup.bash
 
+# PYTHONPATH 설정 
 export PYTHONPATH=$PYTHONPATH:~/ros2_ws/install/dsr_common2/lib/dsr_common2/imp
-ros2 launch ...
-ros2 run cobot1 americano_bot
 
-
+# 실행
+ros2 launch dsr_bringup2 dsr_bringup2_rviz.launch.py mode:=real host:=192.168.1.100 port:=12345 model:=m0609 #ip확인필요
+ros2 run americanobot americano_bot
 ```
 
 <br>
