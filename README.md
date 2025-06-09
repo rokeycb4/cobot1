@@ -27,11 +27,12 @@ cd ~/ros2_ws/src  # ROS2 작업 공간으로 이동
 git clone https://github.com/rokeycb4/cobot1.git
 
 # (선택) 패키지 제외한 파일 삭제
+cd cobot1
 chmod +x clean_rest.sh
 ./clean_rest.sh
 
 # 빌드
-cd ..
+cd ~/ros2_ws
 colcon build
 source install/setup.bash
 
